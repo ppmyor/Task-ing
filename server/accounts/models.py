@@ -51,7 +51,7 @@ class User(AbstractUser):
         unique=True,
         validators=[username_validator],
         error_messages={
-            'unique': "아이디가 이미 존재합다."
+            'unique': "아이디가 이미 존재합니다."
         })
     name = models.CharField(verbose_name='이름',max_length=15)
     email = models.EmailField(unique=True, blank=False)

@@ -20,7 +20,6 @@ from rest_framework import status, generics
 from .serializers import UserLoginSerializer
 from dj_rest_auth.serializers import JWTSerializer
 
-
 User = get_user_model()
 
 
@@ -53,7 +52,7 @@ class SocialLoginView2(SocialLoginView):
     def get_response(self):
         super().get_response()
 
-        serializer_class = JWTSerializer2
+        serializer_class = JWTSerializer
         if getattr(settings, 'REST_USE_JWT', False):
             from rest_framework_simplejwt.settings import (
                 api_settings as jwt_settings,
@@ -136,16 +135,3 @@ class GoogleLogin(SocialLoginView2):
     serializer_class = SocialLoginSerializer2
 
 
-class JWTSerializer2(JWTSerializer):
-    def get_user(self, obj):
-        rest_auth_serializers = getattr(settings, 'REST_AUTH_SERIALIZERS', {})
-        JWTUserDetailsSerializer = import_string(
-            rest_auth_serializers.get(
-                'USER_DETAILS_SERIALIZER',
-                'accounts.serializers.UserDetailsSerializer2',
-            ),
-        )
-
-        user_data = JWTUserDetailsSerializer(
-            obj['user'], context=self.context).data
-        return user_data
