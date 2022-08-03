@@ -1,6 +1,6 @@
 import React from "react";
-import logoImage from "../../../utils/images/tasking_logo.png";
-import { ReactComponent as KakaoLogoImage } from "../../../utils/images/kakaotalk.svg";
+import logoImage from "../../../utils/assets/tasking_logo.png";
+import { ReactComponent as KakaoLogoImage } from "../../../utils/assets/kakaotalk.svg";
 import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
