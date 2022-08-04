@@ -1,14 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import logoImage from "../../../utils/assets/tasking_logo.png";
 import { ReactComponent as KakaoLogoImage } from "../../../utils/assets/kakaotalk.svg";
 import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import GoogleLogin from "react-google-login";
+import { CLIENT_ID } from "../../../config/OAuth";
+import { gapi } from "gapi-script";
+import axios from "axios";
 
 const LoginPage = () => {
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onIdChangeHandler = (event) => {
+    setId(event.currentTarget.value);
+  };
+
+  const onPasswordChangeHandler = (event) => {
+    setPassword(event.currentTarget.value);
+  };
+
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+    console.log(id, password);
+  };
+
+  // google login
+  const onGoogleSignInSuccess = (res) => {
+    const params = new URLSearchParams();
+    params.append("idToken", res.tokenObj.id_token);
+    console.log(res);
+
+    const googleLogin = async () => {
+      const res = await axios.post("http://localhost:8000/api/v1/accounts/rest-auth/google/", params, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      localStorage.setItem("accessToken", res.data.token.access);
+      localStorage.setItem("refreshToken", res.data.token.refresh);
+    };
+
+    googleLogin();
+  };
+
+  gapi.load("client:auth2", () => {
+    gapi.client.init({
+      clientId: `${CLIENT_ID}.apps.googleusercontent.com`,
+      plugin_name: "chat",
+    });
+  });
+
   return (
     <div className="flex justify-center items-center w-full h-screen">
       <main className="w-10/12 sm:w-10/12 md:w-4/6 lg:w-1/3 p-10 lg:p-20 rounded-lg border border-zinc-200  dark:bg-white">
-        <form className="flex flex-col">
+        {/* 로그인 form */}
+        <form onSubmit={onSubmitHandler} className="flex flex-col">
           <img src={logoImage} alt="task-ing logo" className="w-32 sm:w-32 md:w-48 lg:w-60 m-auto" />
 
           <h2 className="mt-6 sm:mt-6 md:mt-8 text-center text-zinc-800 text-sm sm:text-sm md:text-md lg:text-lg">
@@ -20,6 +68,8 @@ const LoginPage = () => {
             <input
               type="text"
               placeholder="Input Your ID"
+              value={id}
+              onChange={onIdChangeHandler}
               id="id"
               className="mt-2 text-zinc-800 input input-bordered w-full max-w-sm bg-white hover:border-green-600 focus:border-green-900"
             />
@@ -30,14 +80,20 @@ const LoginPage = () => {
             <input
               type="password"
               placeholder="Input Your Password"
+              value={password}
+              onChange={onPasswordChangeHandler}
               id="password"
               className="mt-2 text-zinc-800 input input-bordered w-full max-w-sm bg-white hover:border-green-600 focus:border-green-900"
             />
           </label>
 
-          <button className="mt-6 sm:mt-6 md:mt-8 btn text-white border-none bg-green-600 hover:bg-green-700 focus:bg-green-900">
+          <button
+            type="submit"
+            className="mt-6 sm:mt-6 md:mt-8 btn text-white border-none bg-green-600 hover:bg-green-700 focus:bg-green-900"
+          >
             로그인
           </button>
+
           <div className="flex flex-col items-start md:flex-row md:justify-between md:items-center mt-2">
             <label className="label cursor-pointer justify-start">
               <input type="checkbox" className="checkbox checkbox-xs" />
@@ -56,9 +112,20 @@ const LoginPage = () => {
             <button className="py-2 px-3 rounded-lg bg-kakao-100 hover:bg-kakao-200 active:bg-kakao-100">
               <KakaoLogoImage width="16" height="16" fill="white" />
             </button>
-            <button className="py-2 px-3 md:ml-4 rounded-lg bg-google-200 hover:bg-google-100 active:bg-google-200">
-              <FontAwesomeIcon icon={faGoogle} color="white" />
-            </button>
+            <GoogleLogin
+              clientId={CLIENT_ID}
+              onSuccess={onGoogleSignInSuccess}
+              onFailure={onGoogleSignInSuccess}
+              buttonText=""
+              render={(renderProps) => (
+                <button
+                  onClick={renderProps.onClick}
+                  className="py-2 px-3 md:ml-4 rounded-lg bg-google-200 hover:bg-google-100 active:bg-google-200"
+                >
+                  <FontAwesomeIcon icon={faGoogle} color="white" />
+                </button>
+              )}
+            />
             <button className="py-2 px-3 md:ml-4 rounded-lg bg-github-200 hover:bg-github-100 active:bg-github-200">
               <FontAwesomeIcon icon={faGithub} color="white" />
             </button>
