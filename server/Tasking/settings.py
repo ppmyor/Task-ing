@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-
+    
     'accounts',
 
 
@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
 
     'dj_rest_auth.registration',
-
+    'drf_yasg',
 ]
 
 SITE_ID = 1
