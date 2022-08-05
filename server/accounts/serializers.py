@@ -3,7 +3,16 @@ from rest_framework.serializers import ModelSerializer
 from .models import User
 from django.contrib.auth.password_validation import validate_password
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
+from django.contrib.auth import authenticate
+from requests.exceptions import HTTPError
+from django.contrib.auth import get_user_model
 
+try:
+    from allauth.account import app_settings as allauth_settings
+    from allauth.socialaccount.helpers import complete_social_login
+
+except ImportError:
+    raise ImportError('allauth needs to be added to INSTALLED_APPS.')
 
 
 class CreateUserSerializer(ModelSerializer):
@@ -20,10 +29,8 @@ class CreateUserSerializer(ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
-            phone_number=validated_data['phone_number'],
             name=validated_data['name'],
         )
-
         
         user.set_password(validated_data['password'])
         user.save()
@@ -34,6 +41,19 @@ class CreateUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=30)
+    password = serializers.CharField(max_length=128, write_only=True)
+    token = serializers.CharField(max_length=255, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username']
+
+
 
 class SocialLoginSerializer2(SocialLoginSerializer):
     uid = serializers.IntegerField(required=False)

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
+from django.utils.module_loading import import_string
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
@@ -16,6 +17,9 @@ from django.conf import settings
 from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework import status, generics
+from .serializers import UserLoginSerializer
+from dj_rest_auth.serializers import JWTSerializer
+
 
 User = get_user_model()
 
@@ -24,6 +28,25 @@ class CreateUserViewSet(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
     # permission_classes = (IsLogoutUser,)
+
+
+
+class Login(generics.GenericAPIView):
+    serializer_class = UserLoginSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if not serializer.is_valid(raise_exception=True):
+            return Response({"FAIL_Message": "요청 유형이 잘못되었습니다."}, status=status.HTTP_409_CONFLICT)
+
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        # print(request.data.get('login_type'))
+        if user['id'] == "None":
+            return Response({"FAIL_Message": "로그인 정보가 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 class SocialLoginView2(SocialLoginView):
@@ -74,9 +97,6 @@ class SocialLoginView2(SocialLoginView):
             from dj_rest_auth.jwt_auth import set_jwt_cookies
             set_jwt_cookies(response, self.access_token, self.refresh_token)
 
-        is_profile = Profile.objects.filter(user=self.user)
-        if is_profile.count() == 0:
-            Profile.objects.create(user=self.user)
         return response
 
 
@@ -112,3 +132,20 @@ class GithubLogin(SocialLoginView2):
     callback_url = GITHUB_CALLBACK_URI
     client_class = OAuth2Client
     serializer_class = SocialLoginSerializer2
+
+
+
+
+class JWTSerializer2(JWTSerializer):
+    def get_user(self, obj):
+        rest_auth_serializers = getattr(settings, 'REST_AUTH_SERIALIZERS', {})
+        JWTUserDetailsSerializer = import_string(
+            rest_auth_serializers.get(
+                'USER_DETAILS_SERIALIZER',
+                'accounts.serializers.UserDetailsSerializer2',
+            ),
+        )
+
+        user_data = JWTUserDetailsSerializer(
+            obj['user'], context=self.context).data
+        return user_data
