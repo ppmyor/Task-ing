@@ -11,8 +11,8 @@ from django.utils.module_loading import import_string
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
-from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.naver.views import NaverOAuth2Adapter
 from django.conf import settings
 from django.utils import timezone
 from rest_framework.response import Response
@@ -102,28 +102,23 @@ class SocialLoginView2(SocialLoginView):
 
 # 소셜 로그인
 BASE_URL = 'http://localhost:8000/api/v1/accounts/rest-auth/'
-GOOGLE_CALLBACK_URI = BASE_URL + 'google/'
-FACEBOOK_CALLBACK_URI = BASE_URL + 'facebook/'
-GITHUB_CALLBACK_URI = BASE_URL + 'github/'
-
-
-class GoogleLogin(SocialLoginView2):
-    adapter_class = GoogleOAuth2Adapter
-    callback_url = GOOGLE_CALLBACK_URI
-    client_class = OAuth2Client
-    serializer_class = SocialLoginSerializer2
+KAKAO_CALLBACK_URI = BASE_URL + 'kakao/callback/'
+NAVER_CALLBACK_URI = BASE_URL + 'naver/callback/'
+GOOGLE_CALLBACK_URI = BASE_URL + 'google/callback/'
+GITHUB_CALLBACK_URI = BASE_URL + 'github/callback/'
 
 
 class KakaoLogin(SocialLoginView2):
     adapter_class = KakaoOAuth2Adapter
+    callbakc_url = KAKAO_CALLBACK_URI
     client_class = OAuth2Client
     serializer_class = SocialLoginSerializer2
 
 
-class FacebookLogin(SocialLoginView2):
-    adapter_class = FacebookOAuth2Adapter
+class NaverLogin(SocialLoginView2):
+    adapter_class = NaverOAuth2Adapter
+    callback_url = NAVER_CALLBACK_URI
     client_class = OAuth2Client
-    callback_url = FACEBOOK_CALLBACK_URI
     serializer_class = SocialLoginSerializer2
 
 
@@ -134,6 +129,11 @@ class GithubLogin(SocialLoginView2):
     serializer_class = SocialLoginSerializer2
 
 
+class GoogleLogin(SocialLoginView2):
+    adapter_class = GoogleOAuth2Adapter
+    callback_url = GOOGLE_CALLBACK_URI
+    client_class = OAuth2Client
+    serializer_class = SocialLoginSerializer2
 
 
 class JWTSerializer2(JWTSerializer):

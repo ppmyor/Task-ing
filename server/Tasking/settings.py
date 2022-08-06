@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-fty+mdy&t4s^bl=id6_rd($6&n95zains9da#7*(d$6yidx#8-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['15.165.19.180']
 
 
 # Application definition
@@ -50,9 +50,9 @@ INSTALLED_APPS = [
 
     'allauth',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.naver',
+    'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
 
     'dj_rest_auth.registration',
