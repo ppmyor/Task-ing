@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('username', models.CharField(error_messages={'unique': '아이디가 이미 존재합다.'}, max_length=20, unique=True, validators=[accounts.models.UnicodeUsernameValidator()], verbose_name='아이디')),
+                ('username', models.CharField(error_messages={'unique': '아이디가 이미 존재합니다.'}, max_length=20, unique=True, validators=[accounts.models.UnicodeUsernameValidator()], verbose_name='아이디')),
                 ('name', models.CharField(max_length=15, verbose_name='이름')),
                 ('email', models.EmailField(max_length=254, unique=True)),
                 ('is_testuser', models.BooleanField(default=False, verbose_name='테스터')),
