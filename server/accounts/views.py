@@ -63,12 +63,11 @@ class SocialLoginView2(SocialLoginView):
                 timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
             return_expiration_times = getattr(
                 settings, 'JWT_AUTH_RETURN_EXPIRATION', False)
-            uid = self.user.uid
+            # uid = self.user.uid
             data = {
                 'user': {
                     'pk': self.user.pk,
                     'email': self.user.email,
-                    'uid': uid
                 },
                 'access_token': self.access_token,
                 'refresh_token': self.refresh_token,

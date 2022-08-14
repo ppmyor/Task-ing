@@ -56,17 +56,17 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class SocialLoginSerializer2(SocialLoginSerializer):
-    uid = serializers.IntegerField(required=False)
+    # uid = serializers.IntegerField(required=False)
     # grade = serializers.ReadOnlyField()
 
     def validate(self, attrs):
         login = self.get_login(attrs)
 
-        self.uid = login.account.user.uid
-        login.account.user.uid = login.account.uid
+        # self.uid = login.account.user.uid
+        # login.account.user.uid = login.account.uid
 
         attrs['user'] = login.account.user
-        attrs['uid'] = login.account.user.uid
+        # attrs['uid'] = login.account.user.uid
         user = attrs['user']
         user.save()
 
