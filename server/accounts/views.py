@@ -52,7 +52,7 @@ class SocialLoginView2(SocialLoginView):
     def get_response(self):
         super().get_response()
 
-        serializer_class = JWTSerializer
+        serializer_class = JWTSerializer2
         if getattr(settings, 'REST_USE_JWT', False):
             from rest_framework_simplejwt.settings import (
                 api_settings as jwt_settings,

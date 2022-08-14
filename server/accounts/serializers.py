@@ -3,9 +3,9 @@ from rest_framework.serializers import ModelSerializer
 from .models import User
 from django.contrib.auth.password_validation import validate_password
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
-from django.contrib.auth import authenticate
 from requests.exceptions import HTTPError
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext as _
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -164,3 +164,34 @@ class SocialLoginSerializer2(SocialLoginSerializer):
             login.lookup()
             login.save(request, connect=True)
         return login
+
+
+
+from dj_rest_auth.serializers import UserDetailsSerializer, JWTSerializer
+
+class UserDetailsSerializer2(UserDetailsSerializer):
+    class Meta:
+        extra_fields = []
+        if hasattr(UserModel, 'USERNAME_FIELD'):
+            extra_fields.append(UserModel.USERNAME_FIELD)
+        if hasattr(UserModel, 'EMAIL_FIELD'):
+            extra_fields.append(UserModel.EMAIL_FIELD)
+        model = UserModel
+        fields = ('pk', *extra_fields)
+        read_only_fields = ('email',)
+
+
+
+class JWTSerializer2(JWTSerializer):
+    def get_user(self, obj):
+        rest_auth_serializers = getattr(settings, 'REST_AUTH_SERIALIZERS', {})
+        JWTUserDetailsSerializer = import_string(
+            rest_auth_serializers.get(
+                'USER_DETAILS_SERIALIZER',
+                'accounts.serializers.UserDetailsSerializer2',
+            ),
+        )
+
+        user_data = JWTUserDetailsSerializer(
+            obj['user'], context=self.context).data
+        return user_data
