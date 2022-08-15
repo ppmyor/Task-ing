@@ -13,6 +13,7 @@ api_patterns = [
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/', include('accounts.urls')),
     path('work/',include('works.urls')),
+    path('accounts/',  include('allauth.urls')),
 
 ]
 schema_view = get_schema_view(

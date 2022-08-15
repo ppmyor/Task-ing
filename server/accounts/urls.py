@@ -3,7 +3,7 @@ from . import views
 from django.conf.urls import url
 
 urlpatterns =[
-    path('signup/', views.CreateUserViewSet.as_view()),
+    # path('signup/', views.CreateUserViewSet.as_view()),
 
     path('rest-auth/kakao/', views.KakaoLogin.as_view(), name='kakao'),
     path('rest-auth/naver/', views.NaverLogin.as_view(), name='naver'),

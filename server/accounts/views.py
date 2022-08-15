@@ -1,13 +1,13 @@
 from rest_auth.registration.views import SocialLoginView
-from .serializers import SocialLoginSerializer2, CreateUserSerializer
+from .serializers import CreateUserSerializer
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
-from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
-from django.utils.module_loading import import_string
+
+from dj_rest_auth.registration.serializers import SocialLoginSerializer
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
@@ -18,7 +18,6 @@ from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework import status, generics
 from .serializers import UserLoginSerializer
-from dj_rest_auth.serializers import JWTSerializer
 
 User = get_user_model()
 
@@ -47,57 +46,6 @@ class Login(generics.GenericAPIView):
             return Response({"FAIL_Message": "로그인 정보가 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
-class SocialLoginView2(SocialLoginView):
-    def get_response(self):
-        super().get_response()
-
-        serializer_class = JWTSerializer2
-        if getattr(settings, 'REST_USE_JWT', False):
-            from rest_framework_simplejwt.settings import (
-                api_settings as jwt_settings,
-            )
-            access_token_expiration = (
-                timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
-            refresh_token_expiration = (
-                timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
-            return_expiration_times = getattr(
-                settings, 'JWT_AUTH_RETURN_EXPIRATION', False)
-            # uid = self.user.uid
-            data = {
-                'user': {
-                    'pk': self.user.pk,
-                    'email': self.user.email,
-                },
-                'access_token': self.access_token,
-                'refresh_token': self.refresh_token,
-            }
-
-            if return_expiration_times:
-                data['access_token_expiration'] = access_token_expiration
-                data['refresh_token_expiration'] = refresh_token_expiration
-
-            serializer = serializer_class(
-                instance=data,
-                context=self.get_serializer_context(),
-            )
-        elif self.token:
-            serializer = serializer_class(
-                instance=self.token,
-                context=self.get_serializer_context(),
-            )
-
-        else:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        response = Response(serializer.data, status=status.HTTP_200_OK)
-        if getattr(settings, 'REST_USE_JWT', False):
-            from dj_rest_auth.jwt_auth import set_jwt_cookies
-            set_jwt_cookies(response, self.access_token, self.refresh_token)
-
-        return response
-
-
 # 소셜 로그인
 BASE_URL = 'http://localhost:8000/api/v1/accounts/rest-auth/'
 KAKAO_CALLBACK_URI = BASE_URL + 'kakao/'
@@ -106,31 +54,31 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'google/'
 GITHUB_CALLBACK_URI = BASE_URL + 'github/'
 
 
-class KakaoLogin(SocialLoginView2):
+class KakaoLogin(SocialLoginView):
     adapter_class = KakaoOAuth2Adapter
     callbakc_url = KAKAO_CALLBACK_URI
     client_class = OAuth2Client
-    serializer_class = SocialLoginSerializer2
+    serializer_class = SocialLoginSerializer
 
 
-class NaverLogin(SocialLoginView2):
+class NaverLogin(SocialLoginView):
     adapter_class = NaverOAuth2Adapter
     callback_url = NAVER_CALLBACK_URI
     client_class = OAuth2Client
-    serializer_class = SocialLoginSerializer2
+    serializer_class = SocialLoginSerializer
 
 
-class GithubLogin(SocialLoginView2):
+class GithubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
     callback_url = GITHUB_CALLBACK_URI
     client_class = OAuth2Client
-    serializer_class = SocialLoginSerializer2
+    serializer_class = SocialLoginSerializer
 
 
-class GoogleLogin(SocialLoginView2):
+class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     callback_url = GOOGLE_CALLBACK_URI
     client_class = OAuth2Client
-    serializer_class = SocialLoginSerializer2
+    serializer_class = SocialLoginSerializer
 
 

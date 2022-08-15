@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'works',
 
 
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,10 +46,10 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'rest_framework.authtoken',
-
     'rest_auth',
 
     'allauth',
+    'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.kakao',
     'allauth.socialaccount.providers.naver',
@@ -173,3 +172,32 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     },
 }
+
+
+import datetime
+
+REST_USE_JWT = True
+
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            # 'rest_framework.authentication.SessionAuthentication',
+            # 'rest_framework.authentication.BasicAuthentication'
+            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+
+            'rest_framework.authentication.SessionAuthentication',
+            'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+            ],
+        'DEFAULT_PERMISSION_CLASSES': [
+            'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+            ]
+        }
+
+JWT_AUTH = {
+        'JWT_SECRET_KEY': SECRET_KEY,
+        'JWT_ALGORITHM': 'HS256',
+        'JWT_ALLOW_REFRESH': True,
+        'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+        'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+        }
+
