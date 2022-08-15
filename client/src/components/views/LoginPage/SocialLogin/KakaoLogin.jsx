@@ -7,9 +7,6 @@ const KakaoLogin = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const KAKAO_CODE = location.search.split("=")[1];
-  let ACCESS_TOKEN = "";
-  let ID_TOKEN = "";
-  console.log(KAKAO_CODE);
 
   const getKakaoToken = () => {
     fetch(`https://kauth.kakao.com/oauth/token`, {
@@ -20,7 +17,7 @@ const KakaoLogin = () => {
       .then((response) => response.json())
       .catch((error) => console.log("get token error: ", error))
       .then((data) => {
-        console.log(data);
+        localStorage.setItem("accessToken", data.access_token);
         navigate("/");
       });
   };
@@ -29,6 +26,7 @@ const KakaoLogin = () => {
     if (!location.search) return;
     getKakaoToken();
   }, []);
+
   return <div>KakaoLogin</div>;
 };
 
