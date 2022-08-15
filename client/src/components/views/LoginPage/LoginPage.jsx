@@ -5,12 +5,14 @@ import { ReactComponent as KakaoLogoImage } from "../../../utils/assets/kakaotal
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import GoogleLogin from "react-google-login";
-import { GOOGLE_CLIENT_ID } from "../../../config/OAuth";
+import { GOOGLE_CLIENT_ID, KAKAO_AUTH_URL } from "../../../config/OAuth";
 import { gapi } from "gapi-script";
 import axios from "axios";
 import { DOMAIN } from "../../../config/domain";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
 
@@ -27,11 +29,16 @@ const LoginPage = () => {
     console.log(id, password);
   };
 
+  // kakao login handler
+  const kakaoLoginHandler = () => {
+    window.location.href = KAKAO_AUTH_URL;
+  };
+
   // google login Success
   const onGoogleSuccess = async (res) => {
+    console.log(res);
     let body = {
       access_token: res.accessToken,
-      code: "string",
       id_token: res.tokenId,
     };
 
@@ -41,7 +48,10 @@ const LoginPage = () => {
           "Content-Type": "application/json",
         },
       })
-      .then((response) => console.log(response))
+      .then((response) => {
+        console.log(response);
+        navigate("/");
+      })
       .catch((error) => console.log(error));
   };
 
