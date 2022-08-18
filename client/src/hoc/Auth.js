@@ -7,7 +7,6 @@ function Auth(SpecificComponent, option) {
 
     useEffect(() => {
       const findToken = localStorage.getItem("accessToken");
-      console.log(findToken);
       if (findToken === null) {
         if (option === true) {
           // 유저는 로그인 하지 않은 상태, 로그인 한 회원만 진입이 가능한 페이지 접근 시

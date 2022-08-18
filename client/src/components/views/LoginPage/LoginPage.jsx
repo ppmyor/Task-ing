@@ -5,7 +5,7 @@ import { ReactComponent as KakaoLogoImage } from "../../../utils/assets/kakaotal
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import GoogleLogin from "react-google-login";
-import { GOOGLE_CLIENT_ID, KAKAO_AUTH_URL } from "../../../config/OAuth";
+import { GOOGLE_CLIENT_ID, KAKAO_AUTH_URL, NAVER_AUTH_URL, GITHUB_AUTH_URL } from "../../../config/OAuth";
 import { gapi } from "gapi-script";
 import axios from "axios";
 import { DOMAIN } from "../../../config/domain";
@@ -32,6 +32,11 @@ const LoginPage = () => {
   // kakao login handler
   const kakaoLoginHandler = () => {
     window.location.href = KAKAO_AUTH_URL;
+  };
+
+  // naver login handler
+  const naverLoginHandler = () => {
+    window.location.href = NAVER_AUTH_URL;
   };
 
   // google login Success
@@ -124,13 +129,17 @@ const LoginPage = () => {
           <h3 className="mt-4 sm:mt-4 md:mt-6 text-center text-zinc-700 text-sm sm:text-sm md:text-md">
             다른 방식으로 로그인
           </h3>
+
           <div className="flex mt-3 sm:mt-3 md:mt-8 px-4 sm:px-4 justify-between sm:justify-between md:justify-center">
+            {/* kakao */}
             <button
               className="py-2 px-3 rounded-lg bg-kakao-100 hover:bg-kakao-200 active:bg-kakao-100"
               onClick={kakaoLoginHandler}
             >
               <KakaoLogoImage width="16" height="16" fill="white" />
             </button>
+
+            {/* google */}
             <GoogleLogin
               clientId={GOOGLE_CLIENT_ID}
               onSuccess={onGoogleSuccess}
@@ -145,10 +154,17 @@ const LoginPage = () => {
                 </button>
               )}
             />
+
+            {/* github */}
             <button className="py-2 px-3 md:ml-4 rounded-lg bg-github-200 hover:bg-github-100 active:bg-github-200">
               <FontAwesomeIcon icon={faGithub} color="white" />
             </button>
-            <button className="py-2 px-3 md:ml-4 rounded-lg bg-naver-200 hover:bg-naver-100 active:bg-naver-200">
+
+            {/* naver */}
+            <button
+              className="py-2 px-3 md:ml-4 rounded-lg bg-naver-200 hover:bg-naver-100 active:bg-naver-200"
+              onClick={naverLoginHandler}
+            >
               <NaverLogoImage width="18" height="18" fill="#00B900" />
             </button>
           </div>
