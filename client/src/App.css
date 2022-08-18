@@ -10,6 +10,9 @@
   .notice-text {
     @apply mt-6 sm:mt-6 md:mt-8 text-center text-zinc-800 text-sm sm:text-sm lg:text-lg;
   }
+  .validation-alert-text {
+    @apply text-red-700 text-xs mt-2;
+  }
   .account-label {
     @apply flex flex-col sm:flex-col mt-6 sm:mt-6 md:flex-row md:items-center;
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import logoImage from "../../../utils/assets/tasking_logo.png";
 import { ReactComponent as NaverLogoImage } from "../../../utils/assets/naver.svg";
 import { ReactComponent as KakaoLogoImage } from "../../../utils/assets/kakaotalk.svg";
@@ -10,23 +10,18 @@ import { gapi } from "gapi-script";
 import axios from "axios";
 import { DOMAIN } from "../../../config/domain";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors, isDirty },
+  } = useForm({ mode: "onChange" });
 
-  const onIdChangeHandler = (event) => {
-    setId(event.currentTarget.value);
-  };
-
-  const onPasswordChangeHandler = (event) => {
-    setPassword(event.currentTarget.value);
-  };
-
-  const onSubmitHandler = (event) => {
-    event.preventDefault();
-    console.log(id, password);
+  const onSubmitHandler = (data) => {
+    console.log(data.id, data.password);
   };
 
   // kakao login handler
@@ -78,7 +73,7 @@ const LoginPage = () => {
     <div className="flex justify-center items-center w-full h-screen">
       <main className="main-card">
         {/* 로그인 form */}
-        <form onSubmit={onSubmitHandler} className="flex flex-col">
+        <form onSubmit={handleSubmit((data) => onSubmitHandler(data))} className="flex flex-col">
           <img src={logoImage} alt="task-ing logo" className="w-32 sm:w-32 md:w-48 lg:w-60 m-auto" />
 
           <h2 className="notice-text">Sign in to Task-ing.</h2>
@@ -88,26 +83,44 @@ const LoginPage = () => {
             <input
               type="text"
               placeholder="Input Your ID"
-              value={id}
-              onChange={onIdChangeHandler}
               id="id"
               className="account-input"
+              aria-invalid={!isDirty ? undefined : errors.id ? "true" : "false"}
+              {...register("id", {
+                required: "아이디는 필수 입력입니다.",
+              })}
             />
           </label>
+          {errors.id && (
+            <span role="alert" className="validation-alert-text">
+              {errors.id.message}
+            </span>
+          )}
 
           <label htmlFor="password" className="account-label">
             <span className="account-label-text">password</span>
             <input
               type="password"
               placeholder="Input Your Password"
-              value={password}
-              onChange={onPasswordChangeHandler}
               id="password"
               className="account-input"
+              aria-invalid={!isDirty ? undefined : errors.password ? "true" : "false"}
+              {...register("password", {
+                required: "비밀번호는 필수 입력입니다.",
+                minLength: {
+                  value: 8,
+                  message: "8자리 이상 비밀번호를 사용하세요.",
+                },
+              })}
             />
           </label>
+          {errors.password && (
+            <span role="alert" className="validation-alert-text">
+              {errors.password.message}
+            </span>
+          )}
 
-          <button type="submit" className="btn-green">
+          <button type="submit" className="btn-green" disabled={isSubmitting}>
             로그인
           </button>
 
