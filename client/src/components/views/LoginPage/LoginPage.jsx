@@ -55,6 +55,7 @@ const LoginPage = () => {
       })
       .then((response) => {
         console.log(response);
+        localStorage.setItem("accessToken", response.data.access_token);
         navigate("/");
       })
       .catch((error) => console.log(error));
@@ -75,43 +76,38 @@ const LoginPage = () => {
 
   return (
     <div className="flex justify-center items-center w-full h-screen">
-      <main className="w-10/12 sm:w-10/12 md:w-4/6 lg:w-1/3 p-10 lg:p-20 rounded-lg border border-zinc-200  dark:bg-white">
+      <main className="main-card">
         {/* 로그인 form */}
         <form onSubmit={onSubmitHandler} className="flex flex-col">
           <img src={logoImage} alt="task-ing logo" className="w-32 sm:w-32 md:w-48 lg:w-60 m-auto" />
 
-          <h2 className="mt-6 sm:mt-6 md:mt-8 text-center text-zinc-800 text-sm sm:text-sm md:text-md lg:text-lg">
-            Sign in to Task-ing.
-          </h2>
+          <h2 className="notice-text">Sign in to Task-ing.</h2>
 
-          <label htmlFor="id" className="flex flex-col sm:flex-col mt-6 sm:mt-6 md:flex-row md:items-center md:mt-10">
-            <span className="text-zinc-800 text-sm sm:text-sm md:text-md md:w-24">ID</span>
+          <label htmlFor="id" className="account-label md:mt-10">
+            <span className="account-label-text">ID</span>
             <input
               type="text"
               placeholder="Input Your ID"
               value={id}
               onChange={onIdChangeHandler}
               id="id"
-              className="mt-2 text-zinc-800 input input-bordered w-full max-w-sm bg-white hover:border-green-600 focus:border-green-900"
+              className="account-input"
             />
           </label>
 
-          <label htmlFor="password" className="flex flex-col sm:flex-col mt-6 md:flex-row md:items-center">
-            <span className="text-zinc-800 text-sm sm:text-sm md:text-md md:w-24">password</span>
+          <label htmlFor="password" className="account-label">
+            <span className="account-label-text">password</span>
             <input
               type="password"
               placeholder="Input Your Password"
               value={password}
               onChange={onPasswordChangeHandler}
               id="password"
-              className="mt-2 text-zinc-800 input input-bordered w-full max-w-sm bg-white hover:border-green-600 focus:border-green-900"
+              className="account-input"
             />
           </label>
 
-          <button
-            type="submit"
-            className="mt-6 sm:mt-6 md:mt-8 btn text-white border-none bg-green-600 hover:bg-green-700 focus:bg-green-900"
-          >
+          <button type="submit" className="btn-green">
             로그인
           </button>
 
@@ -132,10 +128,7 @@ const LoginPage = () => {
 
           <div className="flex mt-3 sm:mt-3 md:mt-8 px-4 sm:px-4 justify-between sm:justify-between md:justify-center">
             {/* kakao */}
-            <button
-              className="py-2 px-3 rounded-lg bg-kakao-100 hover:bg-kakao-200 active:bg-kakao-100"
-              onClick={kakaoLoginHandler}
-            >
+            <button className="social-login-btn md:ml-0 kakao-btn" onClick={kakaoLoginHandler}>
               <KakaoLogoImage width="16" height="16" fill="white" />
             </button>
 
@@ -146,25 +139,19 @@ const LoginPage = () => {
               onFailure={onGoogleFailure}
               buttonText=""
               render={(renderProps) => (
-                <button
-                  onClick={renderProps.onClick}
-                  className="py-2 px-3 md:ml-4 rounded-lg bg-google-200 hover:bg-google-100 active:bg-google-200"
-                >
+                <button onClick={renderProps.onClick} className="social-login-btn google-btn">
                   <FontAwesomeIcon icon={faGoogle} color="white" />
                 </button>
               )}
             />
 
             {/* github */}
-            <button className="py-2 px-3 md:ml-4 rounded-lg bg-github-200 hover:bg-github-100 active:bg-github-200">
+            <button className="social-login-btn github-btn">
               <FontAwesomeIcon icon={faGithub} color="white" />
             </button>
 
             {/* naver */}
-            <button
-              className="py-2 px-3 md:ml-4 rounded-lg bg-naver-200 hover:bg-naver-100 active:bg-naver-200"
-              onClick={naverLoginHandler}
-            >
+            <button className="social-login-btn naver-btn" onClick={naverLoginHandler}>
               <NaverLogoImage width="18" height="18" fill="#00B900" />
             </button>
           </div>
