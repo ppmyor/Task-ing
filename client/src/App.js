@@ -5,6 +5,7 @@ import LandingPage from "./components/views/LandingPage/LandingPage";
 import KakaoLogin from "./components/views/LoginPage/SocialLogin/KakaoLogin";
 import NaverLogin from "./components/views/LoginPage/SocialLogin/NaverLogin";
 import GithubLogin from "./components/views/LoginPage/SocialLogin/GithubLogin";
+import SignUpPage from "./components/views/SignUpPage/SignUpPage";
 import Auth from "./hoc/Auth";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
   const AuthKakaoLoginPage = Auth(KakaoLogin, false);
   const AuthNaverLoginPage = Auth(NaverLogin, false);
   const AuthGithubLoginPage = Auth(GithubLogin, false);
+  const AuthSignUpPage = Auth(SignUpPage, false);
 
   return (
     <Router>
@@ -20,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<AuthLandingPage />} />
           <Route path="/login" element={<AuthLoginPage />} />
+          <Route path="/signUp" element={<AuthSignUpPage />} />
           <Route path="/api/v1/accounts/rest-auth/kakao/" element={<AuthKakaoLoginPage />} />
           <Route path="/api/v1/accounts/rest-auth/naver/" element={<AuthNaverLoginPage />} />
           <Route path="/api/v1/accounts/rest-auth/github/" element={<AuthGithubLoginPage />} />
