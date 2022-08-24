@@ -21,7 +21,7 @@ const LoginPage = () => {
   } = useForm({ mode: "onChange" });
 
   const onSubmitHandler = (data) => {
-    console.log(data.id, data.password);
+    console.log(data.email, data.password);
   };
 
   // kakao login handler
@@ -32,6 +32,11 @@ const LoginPage = () => {
   // naver login handler
   const naverLoginHandler = () => {
     window.location.href = NAVER_AUTH_URL;
+  };
+
+  //  github login handler
+  const githubLoginHandler = () => {
+    window.location.href = GITHUB_AUTH_URL;
   };
 
   // google login Success
@@ -70,7 +75,7 @@ const LoginPage = () => {
   });
 
   return (
-    <div className="flex justify-center items-center w-full h-screen">
+    <div className="center-display">
       <main className="main-card">
         {/* 로그인 form */}
         <form onSubmit={handleSubmit((data) => onSubmitHandler(data))} className="flex flex-col">
@@ -78,22 +83,26 @@ const LoginPage = () => {
 
           <h2 className="notice-text">Sign in to Task-ing.</h2>
 
-          <label htmlFor="id" className="account-label md:mt-10">
-            <span className="account-label-text">ID</span>
+          <label htmlFor="email" className="account-label md:mt-10">
+            <span className="account-label-text">Email</span>
             <input
-              type="text"
-              placeholder="Input Your ID"
-              id="id"
+              type="email"
+              placeholder="Input Your E-mail"
+              id="email"
               className="account-input"
-              aria-invalid={!isDirty ? undefined : errors.id ? "true" : "false"}
-              {...register("id", {
-                required: "아이디는 필수 입력입니다.",
+              aria-invalid={!isDirty ? undefined : errors.email ? "true" : "false"}
+              {...register("email", {
+                required: "이메일은 필수 입력입니다.",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "이메일의 형식과 일치하지 않습니다.",
+                },
               })}
             />
           </label>
-          {errors.id && (
+          {errors.email && (
             <span role="alert" className="validation-alert-text">
-              {errors.id.message}
+              {errors.email.message}
             </span>
           )}
 
@@ -109,7 +118,11 @@ const LoginPage = () => {
                 required: "비밀번호는 필수 입력입니다.",
                 minLength: {
                   value: 8,
-                  message: "8자리 이상 비밀번호를 사용하세요.",
+                  message: "한 개 이상의 영문자, 한 개 이상의 숫자를 포함한 8자리 이상의 비밀번호를 입력하세요.",
+                },
+                pattern: {
+                  value: /[A-Za-z]{1}[0-9]{1}/,
+                  message: "비밀번호의 형식과 일치하지 않습니다.",
                 },
               })}
             />
@@ -159,7 +172,7 @@ const LoginPage = () => {
             />
 
             {/* github */}
-            <button className="social-login-btn github-btn">
+            <button onClick={githubLoginHandler} className="social-login-btn github-btn">
               <FontAwesomeIcon icon={faGithub} color="white" />
             </button>
 
