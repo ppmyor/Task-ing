@@ -10,10 +10,12 @@ const SignUpPage = () => {
     getValues,
     formState: { isSubmitting, errors, isDirty },
   } = useForm({ mode: "onChange" });
+  const navigate = useNavigate();
 
   const onValid = (data) => {
     console.log("회원가입 성공");
     // !! 회원가입 api 호출 !!
+    navigate("/");
     console.log(data);
   };
 
@@ -26,28 +28,7 @@ const SignUpPage = () => {
         {/* 회원가입 form */}
         <form action="POST" onSubmit={handleSubmit(onValid)} className="flex flex-col">
           <h2 className="notice-text">Sign up to Task-ing. :)</h2>
-          {/* 이미 존재하는 아이디인지 확인 */}
-          <label htmlFor="id" className="account-label md:mt-10">
-            <span className="account-label-text">ID</span>
-            <input
-              type="text"
-              placeholder="Input Your ID"
-              id="id"
-              className="account-input"
-              aria-invalid={!isDirty ? undefined : errors.id ? "true" : "false"}
-              {...register("id", {
-                required: "아이디는 필수 입력입니다.",
-                // !! 자리 수 확인 !!
-              })}
-            />
-          </label>
-          {/* id 관련 error message */}
-          {errors.id && (
-            <span role="alert" className="validation-alert-text">
-              {errors.id.message}
-            </span>
-          )}
-          {/* 이미 존재하는 이메일인지 확인 */}
+
           <label htmlFor="email" className="account-label">
             <span className="account-label-text">E-mail</span>
             <input
@@ -71,7 +52,7 @@ const SignUpPage = () => {
               {errors.email.message}
             </span>
           )}
-          {/* 이미 존재하는 닉네임인지 확인 */}
+
           <label htmlFor="nickname" className="account-label">
             <span className="account-label-text">nickname</span>
             <input
@@ -82,7 +63,6 @@ const SignUpPage = () => {
               aria-invalid={!isDirty ? undefined : errors.nickname ? "true" : "false"}
               {...register("nickname", {
                 required: "닉네임은 필수 입력입니다.",
-                // !! 자리 수 확인 !!
               })}
             />
           </label>
@@ -92,6 +72,7 @@ const SignUpPage = () => {
               {errors.nickname.message}
             </span>
           )}
+
           <label htmlFor="password" className="account-label">
             <span className="account-label-text">password</span>
             <input
@@ -102,7 +83,14 @@ const SignUpPage = () => {
               aria-invalid={!isDirty ? undefined : errors.password ? "true" : "false"}
               {...register("password", {
                 required: "비밀번호는 필수 입력입니다.",
-                // !! 자리 수, 패턴 확인!!
+                minLength: {
+                  value: 8,
+                  message: "한 개 이상의 영문자, 한 개 이상의 숫자를 포함한 8자리 이상의 비밀번호를 입력하세요.",
+                },
+                pattern: {
+                  value: /^[a-zA-Z0-9]*$/,
+                  message: "비밀번호의 형식과 일치하지 않습니다.",
+                },
               })}
             />
           </label>
@@ -121,11 +109,18 @@ const SignUpPage = () => {
               className="account-input"
               aria-invalid={!isDirty ? undefined : errors.passwordConfirm ? "true" : "false"}
               {...register("passwordConfirm", {
-                required: "비밀번호 확인은 필수 입력입니다.",
+                required: "비밀번호는 필수 입력입니다.",
+                minLength: {
+                  value: 8,
+                  message: "한 개 이상의 영문자, 한 개 이상의 숫자를 포함한 8자리 이상의 비밀번호를 입력하세요.",
+                },
+                pattern: {
+                  value: /^[a-zA-Z0-9]*$/,
+                  message: "비밀번호의 형식과 일치하지 않습니다.",
+                },
                 validate: (value) => {
                   const { password } = getValues();
-                  return password === value || "비밀번호가 일치하지 않습니다.";
-                  // !! 자리 수, 패턴 확인!!
+                  return password === value || "비밀번호와 비밀번호 확인이 일치하지 않습니다.";
                 },
               })}
             />
