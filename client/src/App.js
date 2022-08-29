@@ -23,9 +23,9 @@ function App() {
           <Route path="/" element={<AuthLandingPage />} />
           <Route path="/login" element={<AuthLoginPage />} />
           <Route path="/signUp" element={<AuthSignUpPage />} />
-          <Route path="/api/v1/accounts/rest-auth/kakao/" element={<AuthKakaoLoginPage />} />
+          <Route path="/api/v1/accounts/rest-auth/kakao/callback/" element={<AuthKakaoLoginPage />} />
           <Route path="/api/v1/accounts/rest-auth/naver/" element={<AuthNaverLoginPage />} />
-          <Route path="/api/v1/accounts/rest-auth/github/" element={<AuthGithubLoginPage />} />
+          <Route path="/api/v1/accounts/rest-auth/github/callback/" element={<AuthGithubLoginPage />} />
         </Routes>
       </div>
     </Router>
