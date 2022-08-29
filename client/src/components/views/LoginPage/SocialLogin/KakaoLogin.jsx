@@ -1,30 +1,30 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { KAKAO_TOKEN_URL } from "../../../../config/OAuth";
-import { useEffect } from "react";
+import { DOMAIN } from "../../../../config/domain";
 
 const KakaoLogin = () => {
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
   const KAKAO_CODE = location.search.split("=")[1];
 
-  const getKakaoToken = () => {
-    fetch(`https://kauth.kakao.com/oauth/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `${KAKAO_TOKEN_URL}&code=${KAKAO_CODE}`,
-    })
-      .then((response) => response.json())
-      .catch((error) => console.log("get token error: ", error))
-      .then((data) => {
-        localStorage.setItem("accessToken", data.access_token);
+  const request = async () => {
+    console.log(KAKAO_CODE);
+    await axios
+      .get(`${DOMAIN}/accounts/rest-auth/kakao/callback/?code=${KAKAO_CODE}`, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      })
+      .then((response) => {
+        localStorage.setItem("accessToken", response.data.access_token);
         navigate("/");
-      });
+      })
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
-    if (!location.search) return;
-    getKakaoToken();
+    request();
   }, []);
 
   return <div>KakaoLogin</div>;
