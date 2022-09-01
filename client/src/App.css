@@ -44,3 +44,19 @@
     @apply bg-naver-200 hover:bg-naver-100 active:bg-naver-200;
   }
 }
+
+@layer components {
+  .section-card {
+    @apply bg-white px-6 pt-5 mx-10 w-80 h-full rounded-3xl border-2 border-zinc-300 flex flex-col items-center;
+  }
+  .section-label-text {
+    @apply text-slate-900 text-lg font-semibold;
+  }
+  .arrow-btn {
+    @apply text-3xl z-10;
+  }
+
+  .toggle-text-color {
+    @apply dark:text-white text-slate-900;
+  }
+}
