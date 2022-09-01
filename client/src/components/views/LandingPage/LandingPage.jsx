@@ -1,6 +1,6 @@
 import React from "react";
 import logoImage from "../../../utils/assets/tasking_logo.png";
-import Calendar from "./Section/Calendar";
+import UserCalendar from "./Section/UserCalendar";
 import TotalWorkingTime from "./Section/TotalWorkingTime";
 import TimeTracker from "./Section/TimeTracker";
 import ToDo from "./Section/ToDo";
@@ -32,7 +32,7 @@ const LandingPage = () => {
 
         <section className="flex flex-col">
           {/* 달력 */}
-          <Calendar />
+          <UserCalendar />
           <button className="btn bg-slate-100 border-none px-14 mt-10 mx-10 ml-auto w-24">Logout</button>
         </section>
       </div>
